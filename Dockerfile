@@ -10,11 +10,12 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
-# Copy requirements file (if you have one)
+# Copy requirements file
 COPY requirements.txt .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install mysqlclient  # Explicitly install mysqlclient
 
 # Copy the rest of the application code
 COPY . .
