@@ -1,14 +1,26 @@
 FROM python:3.9
 
-WORKDIR /app/backend
+# Install system dependencies for mysqlclient
+RUN apt-get update && apt-get install -y \
+    default-libmysqlclient-dev \
+    build-essential \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt /app/backend
+# Set working directory
+WORKDIR /app
 
-RUN pip install -r requirements.txt
+# Copy requirements file (if you have one)
+COPY requirements.txt .
 
-COPY . /app/backend
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy the rest of the application code
+COPY . .
+
+# Expose port
 EXPOSE 8000
-#RUN python manage.py migrate
-#RUN python manage.py makemigrations
-CMD python /app/backend/manage.py runserver 0.0.0.0:8000
+
+# Command to run the application
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
